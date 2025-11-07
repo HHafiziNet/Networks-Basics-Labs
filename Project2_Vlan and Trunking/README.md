@@ -1,4 +1,4 @@
-# [Project Name: Simulating and Trunking]
+# [Project Name: Simulating Vlna and Trunking]
 
 ## Overview
 In this project we figured out what vlans are and how they are different than subnets and how to implement them by simulating in Cisco Packet Tracer. We built a network including 2 switches and 2 vlans. We also had a comprehensive view about trunking. 
@@ -145,5 +145,5 @@ So, last but not least we accomplished our target and successfully connected two
 - **Lesson Learned:** This challenge highlighted the critical importance of understanding vlans and trunk mode.
 
 ## 🗂️ Project Files
-- `Vlans and trunking.pkt` (Project2_Vlan and Trunking/Vlan and trunking .pkt) 
+-  [`Vlans and trunking.pkt`](https://github.com/HHafiziNet/Networks-Basics-Labs/blob/main/Project2_Vlan%20and%20Trunking/Vlan%20and%20trunking%20.pkt)
 - `README.md` (This file)
