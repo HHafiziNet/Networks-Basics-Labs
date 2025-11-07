@@ -145,5 +145,5 @@ So, last but not least we accomplished our target and successfully connected two
 - **Lesson Learned:** This challenge highlighted the critical importance of understanding vlans and trunk mode.
 
 ## 🗂️ Project Files
-- `Vlans and trunking.pkt` (pro) 
+- `Vlans and trunking.pkt` (Project2_Vlan and Trunking/Vlan and trunking .pkt) 
 - `README.md` (This file)
