@@ -1,149 +1,126 @@
-# [Project Name: Simulating and Trunking]
+# [Project Name: Basic Routing]
 
 ## Overview
-In this project we figured out what vlans are and how they are different than subnets and how to implement them by simulating in Cisco Packet Tracer. We built a network including 2 switches and 2 vlans. We also had a comprehensive view about trunking. 
+In this project we connected two local networks via a router and configuring and troubleshooting the router and switches and we also got familiar with layer 3 in TCP/IP and OSI reference model which is network layer. 
 
 
 ## 🎯 Learning Objectives
-- Understanding vlans and trunking.
-- Different modes of a switch interface.
-- Learn basic Cisco switch configuration and commands.
+- Understanding routing process.
+- What gateways are in networks and host configurations.
+- How a switch deals with outrange packets.
 - Get familiar with simulating tools like Packet Tracer.
 
 ## 🛠️ Technologies & Tools Used
 - **Simulator:** Cisco Packet Tracer
-- **Protocols:** IPv4, ARP, ICMP, 802.1q
+- **Protocols:** IPv4, ARP, ICMP
 - **Analysis Tools:** Packet Tracer Simulation Mode
 
 ## 📸 Visual Documentation
 
 ### 1. Topology Diagram
-![Topology](Images/topology.png)
+![Topology](Images/Network%20Topology.png)
 
 *Caption: This diagram shows the overall network setup created in Packet Tracer.*
 
 ## Project Concepts
-### Vlan
-Vlan stands for virtual lan. We utilize it to separate our networks logically. I will outline its usage by this example: Envision that we have a company network and within our network we have variant departments or sections (eg IT, Sales, Service , ...). It is not reasonable to have connections between different sections unless we have to. Typically we isolate those small networks by putting them in different vlans because PCs in a same vlan are only able to talk to each other. For instance in this project we set PC0 and PC2 to Sales vlan and PC1 and PC3 to IT vlan. Then we kind of shared our vlans between our switches by trunking.
+### Routers
+Routers are devices that act like connectors. They connect different networks with variant net masks and ranges. Routers are likely what shape the internet by letting our packets go thorough different networks to reach their destinations. Plus layer one (Physical layer) and layer two (Data link layer) Routers can underhand and adjust layer 3 (network layer) packets and by looking at the netmask and their destination IP address , they forward a packet to one of their port. If they cannot find a sufficient port, the packet will be sent thorough default port which more likely is the internet cloud.
 
-###  **Pros and cons**
-#### **Pros**  
-- Enhanced Security 
-- Traffic Segmentation
-- Controlled Access
-- Reduced Broadcast Domain
-- Improved flexibility and Manageability 
-
-#### **Cons**
-- Configuration Complexity
-- Higher Initial Cost
-- Hardware Dependencies
-- Troubleshooting Challenges
-- Scalability and Performance
-
+## Default gateway
+Default gateway, is the gateway of our networks that packets with foreign destination IP address can go thorough. In most cases router is the default gateway because it can forward packets (diagrams) to different networks that it has its port connected to them.  
 
 ## 🚀 Implementation Steps
-### 1.  **Topology Design:** Placed four PCs and two Cisco 2960 switches in Packet Tracer and two vlans named **IT** and **Sales**.
+### 1.  **Topology Design:** Placed four PCs and two Cisco 2960 switches connected via a 2911 router in Packet Tracer
 
 
 
 
 ### 2.  **IP Configuration:** 
 ---
-After implementation step, we assigned IP addresses to PCs. We talked about how to assign IP address in previous [project](../Project1_Basic_Switchig/README.md).
+After implementation step, we assigned IP addresses to PCs. We talked about how to assign IP address in  [project 1](../Project1_Basic_Switchig/README.md).
 Here are the PCs and associated IP addresses table.
 
-    | PC  |  Stich   |   Interface      |    IP address   | Vlan ID | Vlan name |
-    |-----|----------|------------------|-----------------|---------|-----------|
-    | PC0 | Switch 1 | Fastehternet 0/1 | 192.168.100.10  |   10    |  Sales    |
-    | PC1 | Switch 1 | Fastehternet 0/2 | 192.168.200.10  |   20    |    IT     |
-    | PC2 | Switch 2 | Fastehternet 0/1 | 192.168.100.20  |   10    |  Sales    |
-    | PC3 | Switch 2 | Fastehternet 0/1 | 192.168.200.20  |   20    |    IT     |
- 
+|  PC |   IP address  |  switch  |
+|-----|---------------|----------|
+|  0  | 192.168.10.10 | switch 0 |
+|  1  | 192.168.10.20 | switch 0 |
+|  2  | 192.168.10.30 | switch 0 | 
+|  3  | 192.168.20.10 | switch 1 | 
+|  4  | 192.168.20.20 | switch 1 | 
+|  5  | 192.168.20.30 | switch 1 | 
+
+So now that we are done assigning IP addresses to our hosts, we need to assign an IP address to a router port which is basically our gateway. Since we have two local networks to connect to each other, we need to use two ports of the router to forward each individual's packets. 
+
+Here is a summery of what port and IP we should set.
+
+|        Port         |  IP address  | 
+|---------------------|--------------|
+| gigabitEthernet 0/1 | 192.168.10.1 |
+| gigabitEthernet 0/2 | 192.168.20.1 | 
+
+So let's start with the gigabitEthernet 0/1. We want this to be our gateway of network one with 192.168.10.0/24 as its range of IP address.
+
+![router configuration 0/1](Images/Router%20config%20gig01.png)
+As depicted, interface gigabitEthernet was chosen to config by command ```interface gigabitEthernet 0/1```. <br>
+To assign IP address to the selected port we utilize ```ip``` Command to set the IP and netmask ->```ip address 192.168.10.1 255.255.255.0```. Then ```no shutdown``` command will turn on the port and you can see the message after.<br>
+We have the same scenario for interface **gigabitEthernet 0/2** as the second network gateway.
+
+![router configuration 0/2](Images/Router%20config%20gig02.png)
 
 
 
-### 3. **Vlan Creation**
----
-Now that we are done with IP addresses, We'll go for creating vlans. Keep that in mind that by default all switch interfaces are in vlan 1. Let's check our vlan table by entering command **show vlan brief**.
 
-![vlan show](Images/show%20vlan%20brief.png)
+## Connection test
+So now that every thing looks fine, let's see whether we have the connection or not. For the first time we check the PC0 to make sure that it has IP address then ping a PC in the foreign network like PC3 with IP **192.168.20.10**.
 
+![Unsuccessful ping](Images/unsuccessful%20ping-PC0.png)
 
+Ohhh man!!! we cannot ping it. What's wrong. Don't panic the key is here. Actually if you examine the default gateway in the picture above, you'll immediately notice that default gateway has not been set on our PCs. Let's fix it.<br>
+To fix this issue we open the IP configuration section and check the default gateway field.
 
+![default gateway misconfiguration](Images/defaultgateway%20misconfiguration-PC0.png)
 
-Now let's move forward and create two vlans. One for Sales ans one for IT sections. In order to create our vlans we have to be in configuring mode.
-We can create our vlan using **vlan (ID)** as shown bellow.
-Notice that switches and computers only work with vlan IDs regardless of their names. To be more comfortable using vlans we assign them a name using **name (vlan name)** command.
+Here it is. We need to fill this field by the IP address of our gateway that is our router port. So we set **192.168.10.1** for this PC and all the PCs that are in this network.
 
-![vlan config](Images/vlan%2010.png)
+![default gateway configuration network 1](Images/defaul%20gateway%20confgureation.png)
 
+Notice that this gateway is solely for this network. For our second network the default gateway IP address should be **192.168.20.1**.
 
+![default gateway configuration network 2](Images/defualt%20gateway%20configuration-PC3.png)
 
-As you can see in picture above, we gave 10 as its vlan ID and sales as its name as well. In order to create our IT vlan we enter the same commands but with different ID which is 20 and IT as its name.
-We set the same configuration in another switch as well.  
+Let's check the connection by the ``ping`` command again to see if the issue is fixed.
 
-### 4. **Adding Interface to Vlan** 
----
-Again we need to be in configuration mode. We use commands depicted in picture bellow.
- 
-![vlan adding](Images/interface%20fast%2001.png)
+![successful ping pc0](Images/successful%20ping%20-PC0.png)
 
+and we ping PC0 from PC3.
 
-Lets talk about what each command does for us.<br>
-**interface fastEthernet 0/1** is used to select the interface we want to adjust. <br>
-**switchport mode access** sets the access mode for this interface. Notice that we always use access mode for interfaces connected to an end-system such as our PCs.<br>
-**switchport access vlan 10** is utilized to add the selected interface to vlan 10; which is our sales vlan<br>
-and in the end we enter **no shutdown** to either turn on the interface if it is off or prevent it from turning off.<br>
-We again set those settings for vlan 2 but we change 10 to 20 as vlan ID and IT for its name. Let's check the vlan table again to see if our vlans are created.
-![vlan table](Images/show%20vlan%20brief%20final.png)
-<br>
-*Vlan table * 
+![successful ping pc3](Images/Successful%20ping-PC5.png)
 
-### 5. **Connecting switches vlans**
----
-In this step we connect our switches to each other via gigabitEthernet interfaces for speed enhancement. We use  following commands to change interface mode from access to trunk. When we change interface mode to trunk, now it will add a tag to its frames that determines the vlan each frame has come from. 
-
-![vlan trunk](Images/interface%20gi%20.png)
-<br>
-<br>
-We choose the interface by **interface gigabitEthernet 0/1** command. Then change interface mode to trunk using **switchout mode trunk**. Finally we enter **no shutdown** that I talked about earlier.
-
-### 6. **Connection test between Vlans**
----
-Before configuring our vlans, I had a ping test between PC0 and PC2 that are in a same subnet and vlan but different switches and you can see the result bellow.
-
-![Ping](Images/pc0%20ipconfig%20and%20ping%20png.png)
-<br>
-<br>
-
-As you can see, our test failed because we did not add the interface to the vlan. After adding the the interface to its vlan, the ping test was successful and we had connection between Sales PCs even with different switches and isolated from IT PCs.
-
-![Ping success](Images/PC0%20ping%20successful.png)
-<br>
-*Successful ping on PC0*
-<br>
-<br>
-We did the same ping test on PC2 to make sure that everything is working properly.
-
-![Ping success2](Images/PC1%20ping%20successful.png)<br>
-*Successful ping on PC2*
-<br>
-<br>
-So, last but not least we accomplished our target and successfully connected two PCs on different Switches tooter.
+Yesss. we did this man. Networks are now successfully connect and can talk to each other.
 
 ## 🔍 Key Findings & Results
-- **Trunk and Access Mode Discovery:** Understood the difference between Access mode and Trunk mode. 
-- **Protocol Dependency:** Observed the 802.1q taq added to frames.
-- **Switch Operation:** Verified that the switch learns Vlan ID  and forwards frames only to the appropriate clients.
+- **Routing:** Understanding routing process. 
+- **Default gateway:** Understanding  what default gateway is and how its misconfiguration can cause issus.
+- **The arp process before routing:** Actually for the first time that you try to ping a foreign network, you get an icmp timeout error shown in the picture bellow.
 
+![](Images/timeout%20-%20Copy.png)
+
+This is because when for the first time we want to connect to another network, we should send our packets to the default gateway but we do not know what the MAC address of the router is and remember that switches only work with MAC addresses not IP addresses. to achieve that goal, first we need to find the MAC address by the ARP protocol and then we send the packets to it so that takes some time and is the reason why we see timeout message. For proof of concepts we can check the ARP table by ```ARP -a``` command before and after the ping process.
+
+![before arp](Images/arp%20table%20before%20arp%20-PC4.png)
+
+This is the ARP table before ping that is empty.
+
+![After arp](Images/arp%20table%20after%20ping-PC4.png)
+
+As the result of the ARP process, you can see that IP address of the router is added to the table.
 
 ## 🚧 Challenges & Solutions
-- **Challenge:** Initially, Ping failed between the two devices. Wrong vlan ID configuration. 
-- **Troubleshooting:** checked the vlan table to see what ports belong to what vlans.
-- **Solution:** Corrected the vlan ID configured on an interface. Changing interface mode to trunk rather than access.
-- **Lesson Learned:** This challenge highlighted the critical importance of understanding vlans and trunk mode.
+- **Challenge:** Initially, Ping failed between the two devices due to default gateway misconfiguration. 
+- **Troubleshooting:** checked the default gateway to see whether we have set on or not.
+- **Solution:** Set the router IP address in the default gateway field.
+- **Lesson Learned:** This challenge highlighted the critical importance of routing and default gateway.
 
 ## 🗂️ Project Files
-- `Vlans and trunking.pkt` (pro) 
+- [Basic routing.pkt](./Basic%20routing.pkt.pkt)
 - `README.md` (This file)
