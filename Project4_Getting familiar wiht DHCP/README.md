@@ -30,7 +30,7 @@ DHCP stands for Dynamic Host Configuration Protocol. As you can guess, this prot
 ## 🚀 Implementation Steps
 ### 1.  **Topology Design:** Placed three PCs and one Cisco 2960 and a DHCP server in Packet Tracer
 
-### 2.  **DHCP Configuration: ** 
+### 2.  **DHCP Configuration:** 
 ---
 
 #### Server IP:
