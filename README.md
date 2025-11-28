@@ -1,4 +1,4 @@
-# 👋 Hi, I’m Hossein Hafizi
+# 👋 Hi, I’m Hossein 
 
 I’m passionate about **💻 computers, 🖧 networking, and 🔒 cybersecurity**.  
 I created this space to **share my knowledge 📚**, explore new technologies 🌐, and practice network labs 🛠.  
